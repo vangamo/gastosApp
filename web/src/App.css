@@ -40,6 +40,7 @@ body {
   text-align: right;
 }
 .inputData__fileField {
+  width: 50%;
   padding: 1em 0;
 }
 .inputData__controls {
