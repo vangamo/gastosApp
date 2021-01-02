@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import GastoList from './components/GastoList';
 import './App.css';
 
 function App() {
@@ -9,6 +10,15 @@ function App() {
   const [ concept, setConcept ] = useState( "" );
   const [ category, setCategory ] = useState( "" );
   const [ date, setDate ] = useState( defaultDate );
+  const [ gastoList, setGastoList ] = useState( [] );
+
+  useEffect( () => {
+    fetch( '/api/gastos/' )
+      .then( (response) => response.json() )
+      .then( (data) => {
+        setGastoList( data );
+      })
+  }, []);
 
   const handleAmount = (ev) => {
     const amount = ev.currentTarget.value;
@@ -45,6 +55,7 @@ function App() {
 
   const handleClickSubmit = (ev) => {
     ev.preventDefault();
+    fetch('/api/gastos/', {method: 'POST'}).then( (response) => {console.log(response);})
   }
 
   return (
@@ -79,6 +90,7 @@ function App() {
             <option value="Farmacia" />
           </datalist>
         </form>
+        <GastoList gastos={gastoList} />
       </main>
     </div>
   );
