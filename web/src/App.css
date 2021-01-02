@@ -9,13 +9,14 @@ body {
   padding: 0;
 }
 .App__header {
-  height: 4em;
+  height: 5em;
   text-align: center;
   background-color: darkblue;
   color: white;
 }
 .App__title {
   margin: 0;
+  padding: 0.5em 0;
 }
 .App__main {
   padding: 20px;
@@ -46,6 +47,8 @@ body {
 .inputData__controls {
   display:flex;
   justify-content: flex-end;
+  gap: 20px;
+  width: 100%;
   padding: 0;
   margin: 0;
   border: 0;
@@ -53,4 +56,31 @@ body {
 .inputData__controls .button {
   width: 100%;
   font-size: 1rem;
+  line-height: 1.5em;
+}
+
+@media (min-width: 768px) { /* and (orientation: portrait), (orientation: landscape) {*/
+  .App__main {
+    padding: 0;
+    margin: 0 auto;
+    width: 80%;
+  }
+  .inputData {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .inputData__label {
+    width: 20%;
+    margin-top: 2em;
+    padding-top: 0;
+    font-size: 1rem;
+  }
+  .inputData__textField {
+    width: 80%;
+    margin-top: 0.5em;
+    font-size: 2rem;
+  }
+  .inputData__controls .button {
+    max-width: 200px;
+  }
 }

@@ -55,10 +55,14 @@ function App() {
       <main className="App__main">
         <h2 className="task__title">{taskTitle}</h2>
         <form className="inputData">
-          <label className="inputData__label">Cantidad: <input type="number" step="0.01" autoFocus required className="inputData__textField numberField" value={amount} onChange={handleAmount} /></label>
-          <label className="inputData__label">Concepto: <input type="text" required className="inputData__textField" value={concept} onChange={handleConceptChange} /></label>
-          <label className="inputData__label">Fecha: <input type="date" required defaultValue={date} onBlur={handleDate} className="inputData__textField" /></label>
-          <label className="inputData__label">Categoría: <input type="text" list="cat" className="inputData__textField" value={category} onChange={handleCategoryChange} /></label>
+          <label forHtml="amount" className="inputData__label">Cantidad:</label>
+          <input type="number" step="0.01" autoFocus required id="amount" className="inputData__textField numberField" value={amount} onChange={handleAmount} />
+          <label className="inputData__label">Concepto:</label>
+          <input type="text" required className="inputData__textField" value={concept} onChange={handleConceptChange} />
+          <label className="inputData__label">Fecha:</label>
+          <input type="date" required defaultValue={date} onBlur={handleDate} className="inputData__textField" />
+          <label className="inputData__label">Categoría:</label>
+          <input type="text" list="cat" className="inputData__textField" value={category} onChange={handleCategoryChange} />
           <input type="file" accept="image/*" capture="camera" className="inputData__fileField"/>
 
           <fieldset className="inputData__controls">
