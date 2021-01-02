@@ -55,7 +55,13 @@ function App() {
 
   const handleClickSubmit = (ev) => {
     ev.preventDefault();
-    fetch('/api/gastos/', {method: 'POST'}).then( (response) => {console.log(response);})
+    fetch('/api/gastos/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify( {concept:"blublu", amount:22, category:"sdkfjsk", date:"2020.01.02"} )})
+    .then( (response) => {console.log(response);})
   }
 
   return (
