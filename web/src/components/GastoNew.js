@@ -1,18 +1,36 @@
 import { useState } from 'react';
+import './GastoNew.css';
 
 function GastoNew( props ) {
   const defaultDate = new Date().toISOString().split('T')[0];
 
   const [ taskTitle, setTaskTitle ] = useState( 'Nuevo gasto' );
   const [ amount, setAmount ] = useState( "" );
+  const [ amountError, setAmountError ] = useState( "" );
   const [ concept, setConcept ] = useState( "" );
+  const [ conceptError, setConceptError ] = useState( "" );
   const [ category, setCategory ] = useState( "" );
+  const [ categoryError, setCategoryError ] = useState( "" );
   const [ date, setDate ] = useState( defaultDate );
 
   const handleAmount = (ev) => {
-    const amount = ev.currentTarget.value;
-    setAmount( amount );
-    if( amount < 0 ) {
+    let amountValue = ev.currentTarget.value;
+    setAmount( amountValue );
+
+    amountValue = amountValue.trim();
+    if( amountValue === "" ) {
+      setAmountError( "El campo cantidad no debe quedar vacío y debe ser un número." );
+      return true;
+    }
+
+    amountValue = parseFloat( amountValue );
+    if( amountValue > -0.01 && amountValue < 0.01 ) {
+      setAmountError( "El campo cantidad no puede ser 0.0." );
+      return true;
+    }
+    setAmountError( "" );
+
+    if( amountValue < 0 ) {
       setTaskTitle( 'Nueva factura' );
     }
     else {
@@ -21,18 +39,34 @@ function GastoNew( props ) {
   };
 
   const handleDate = (ev) => {
-    const date = ev.currentTarget.value;
-    setDate( date );
+    const dateValue = ev.currentTarget.value;
+    setDate( dateValue );
   };
 
   const handleConceptChange = (ev) => {
-    const concept = ev.currentTarget.value;
-    setConcept( concept );
+    let conceptValue = ev.currentTarget.value;
+
+    if( conceptValue.trim() === "" ) {
+      setConceptError( "Debes escribir un concepto" );
+    }
+    else {
+      setConceptError( "" );
+    }
+
+    setConcept( conceptValue );
   };
 
   const handleCategoryChange = (ev) => {
-    const category = ev.currentTarget.value;
-    setCategory( category );
+    let categoryValue = ev.currentTarget.value;
+
+    if( categoryValue.trim() === "" ) {
+      setCategoryError( "Debes escribir una cegetoría" );
+    }
+    else {
+      setCategoryError( "" );
+    }
+
+    setCategory( categoryValue );
   };
 
   const handleClickClear = (ev) => {
@@ -45,7 +79,11 @@ function GastoNew( props ) {
   const handleClickSubmit = (ev) => {
     ev.preventDefault();
 
-    const gastoData = {concept:"blublu", amount:22, category:"sdkfjsk", date:"2020.01.02"};
+    if( amountError !== "" || conceptError !== "" || categoryError !== "" ) {
+      return;
+    }
+
+    const gastoData = { concept, amount, category, date };
     props.handleCreate( gastoData );
   }
 
@@ -53,22 +91,28 @@ function GastoNew( props ) {
     <>
       <h2 className="task__title">{taskTitle}</h2>
       <form className="inputData">
-        <label forHtml="amount" className="inputData__label">Cantidad:</label>
-        <input type="number" step="0.01" autoFocus required id="amount" className="inputData__textField numberField" value={amount} onChange={handleAmount} />
-        <label className="inputData__label">Concepto:</label>
-        <input type="text" required className="inputData__textField" value={concept} onChange={handleConceptChange} />
-        <label className="inputData__label">Fecha:</label>
-        <input type="date" required defaultValue={date} onBlur={handleDate} className="inputData__textField" />
-        <label className="inputData__label">Categoría:</label>
-        <input type="text" list="cat" className="inputData__textField" value={category} onChange={handleCategoryChange} />
+        <label htmlFor="concept" className="inputData__label">Concepto:</label>
+        <input type="text" autoFocus required id="concept" className="inputData__textField" value={concept} onChange={handleConceptChange} />
+        <label htmlFor="amount" className="inputData__label">Cantidad:</label>
+        <input type="number" step="0.01" required id="amount" className={"inputData__textField numberField " + (amountError && "error")} value={amount} onChange={handleAmount} />
+        <label htmlFor="date" className="inputData__label">Fecha:</label>
+        <input type="date" required id="date" defaultValue={date} onBlur={handleDate} className="inputData__textField" />
+        <label htmlFor="category" className="inputData__label">Categoría:</label>
+        <input type="text" list="categoryValues" id="category" className="inputData__textField" value={category} onChange={handleCategoryChange} />
         <input type="file" accept="image/*" capture="camera" className="inputData__fileField"/>
+
+        <ul>
+          {conceptError && (<li className="inputError">{conceptError}</li>)}
+          {amountError && (<li className="inputError">{amountError}</li>)}
+          {categoryError && (<li className="inputError">{categoryError}</li>)}
+        </ul>
 
         <fieldset className="inputData__controls">
           <input type="reset" value="Borrar" className="button" onClick={handleClickClear}/>
           <input type="submit" value="Guardar" className="button" onClick={handleClickSubmit} />
         </fieldset>
 
-        <datalist id="cat">
+        <datalist id="categoryValues">
           <option value="Luz" />
           <option value="Agua" />
           <option value="Internet" />

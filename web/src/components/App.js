@@ -22,7 +22,25 @@ function App() {
         'Content-Type': 'application/json;charset=utf-8'
       },
       body: JSON.stringify( data )})
-    .then( (response) => {console.log(response);})
+    .then( (response) => response.json() )
+    .then( (data) => {
+      console.log(data);
+      if( data.status === 'ok' ) {
+        setGastoList( [data.data, ...gastoList] );
+      }
+    });
+  }
+
+  const deleteGasto = ( gastoId ) => {
+    fetch('/api/gastos/'+gastoId, {
+      method: 'DELETE' })
+    .then( (response) => response.json() )
+    .then( (data) => {
+      console.log(data);
+      if( data.status === 'ok' ) {
+        setGastoList( gastoList.filter( (data) => data.id !== gastoId) );
+      }
+    });
   }
 
   return (
@@ -32,7 +50,7 @@ function App() {
       </header>
       <main className="App__main">
         <GastoNew handleCreate={createNewGasto} />
-        <GastoList gastos={gastoList} />
+        <GastoList gastos={gastoList} handleDelete={deleteGasto} />
       </main>
     </div>
   );
