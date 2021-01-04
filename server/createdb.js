@@ -8,24 +8,22 @@ let db = new sqlite3.Database('mydatabase.db', (err) => {
 
 db.serialize(() => {
   // Queries scheduled here will be serialized.
-  db.run(`CREATE TABLE "expenses" (
-    "concept"	TEXT NOT NULL,
-    "amount"	REAL NOT NULL,
-    "date"	TEXT NOT NULL,
-    "timestamp"	INTEGER,
-    "category"	TEXT,
-    "category_id"	INTEGER
-  );`)
-    .run(`INSERT INTO expenses(concept, amount, date, category)
-          VALUES ('Mercadona', 41.95, '2020-12-28', 'Comida'),
-                 ('Ahorramás', 42.25, '2021-01-02', 'Comida'),
-                 ('Comisiones', 6, '2021-01-03', 'Bancos')`)
-    .each(`SELECT ROWID, concept FROM expenses`, (err, row) => {
-      if (err){
-        throw err;
-      }
-      console.log(row.rowid, row.concept, row);
-    });
+  db.run(
+    `CREATE TABLE "categories" (
+      "id"	INTEGER NOT NULL UNIQUE,
+      "name"	INTEGER NOT NULL UNIQUE,
+      "periodic"	INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY("id" AUTOINCREMENT)
+    );`)
+  .run(
+    `CREATE TABLE "expenses" (
+      "concept"	TEXT NOT NULL,
+      "amount"	REAL NOT NULL,
+      "date"	TEXT NOT NULL,
+      "timestamp"	INTEGER,
+      "category"	TEXT,
+      "category_id"	INTEGER,
+      FOREIGN KEY("category_id") REFERENCES "categories"("id") ON UPDATE CASCADE ON DELETE NO ACTION );`);
 });
 
 // close the database connection

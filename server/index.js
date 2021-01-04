@@ -19,7 +19,11 @@ app.get('/api/gastos/', (req, res) => {
       console.error(err.message);
     }
   });
-  db.all(`SELECT ROWID AS id, concept, amount, date, category FROM expenses ORDER BY date DESC, id DESC`, (err, rows) => {
+  db.all(
+    `SELECT e.ROWID AS id, e.concept, e.amount, e.date, c.name AS category
+      FROM expenses AS e
+      JOIN categories AS c ON (e.category_id=c.id)
+      ORDER BY date DESC, id DESC`, (err, rows) => {
     if (err){
       throw err;
     }
@@ -41,10 +45,15 @@ app.post('/api/gastos/', (req, res) => {
     }
   });
   db.serialize(() => {
-    db.run(`INSERT INTO expenses(concept, amount, date, category)
+    db.run(`INSERT INTO expenses(concept, amount, date, category_id)
               VALUES ($concept, $amount, $date, $category)`,
               {$concept:concept, $amount:amount, $category:category, $date:date})
-      .all(`SELECT ROWID AS id, concept, amount, date, category FROM expenses WHERE id = last_insert_rowid()`, (err, rows) => {
+      .all(
+        `SELECT e.ROWID AS id, e.concept, e.amount, e.date, c.name AS category
+          FROM expenses AS e
+          JOIN categories AS c ON (e.category_id=c.id)
+          WHERE e.ROWID = last_insert_rowid()
+          ORDER BY e.date DESC, id DESC`, (err, rows) => {
       if (err){
         console.log(err);
         throw err;
@@ -85,6 +94,29 @@ app.delete('/api/gastos/:id', (req, res) => {
       res.status(200).send( {status:'ok'} )
     });
               
+  db.close((err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+})
+
+app.get('/api/categories/', (req, res) => {
+  const db = new sqlite3.Database('mydatabase.db', (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+  db.all(`SELECT c.id, c.name, COUNT( e.rowid ) AS count
+    FROM categories AS c
+    LEFT JOIN expenses AS e ON (e.category_id = c.id)
+    GROUP BY c.id
+    ORDER BY count DESC, c.id ASC`, (err, rows) => {
+    if (err){
+      throw err;
+    }
+    res.json( rows )
+  });
   db.close((err) => {
     if (err) {
       return console.error(err.message);

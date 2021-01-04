@@ -83,7 +83,14 @@ function GastoNew( props ) {
       return;
     }
 
-    const gastoData = { concept, amount, category, date };
+    const selected_category = props.categories.findIndex( (catData) => catData.name.trim().toLowerCase() === category.trim().toLowerCase() );
+
+    if( selected_category < 0 ) {
+      setCategoryError("La categoría no existe.")
+      return;
+    }
+
+    const gastoData = { concept, amount, category:props.categories[ selected_category].id, date };
     props.handleCreate( gastoData );
   }
 
@@ -113,12 +120,9 @@ function GastoNew( props ) {
         </fieldset>
 
         <datalist id="categoryValues">
-          <option value="Luz" />
-          <option value="Agua" />
-          <option value="Internet" />
-          <option value="Hosting" />
-          <option value="Comida" />
-          <option value="Farmacia" />
+          {props.categories.map( (catData) => (
+            <option key={catData.id} value={catData.name} />
+          ))}
         </datalist>
       </form>
     </>

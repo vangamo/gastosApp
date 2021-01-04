@@ -6,12 +6,19 @@ import './App.css';
 function App() {
 
   const [ gastoList, setGastoList ] = useState( [] );
+  const [ categoryList, setCategoryList ] = useState( [] );
 
   useEffect( () => {
     fetch( '/api/gastos/' )
       .then( (response) => response.json() )
       .then( (data) => {
         setGastoList( data );
+      });
+
+    fetch( '/api/categories/' )
+      .then( (response) => response.json() )
+      .then( (data) => {
+        setCategoryList( data );
       })
   }, []);
 
@@ -49,7 +56,7 @@ function App() {
         <h1 className="App__title">Gastos</h1>
       </header>
       <main className="App__main">
-        <GastoNew handleCreate={createNewGasto} />
+        <GastoNew categories={categoryList} handleCreate={createNewGasto} />
         <GastoList gastos={gastoList} handleDelete={deleteGasto} />
       </main>
     </div>
