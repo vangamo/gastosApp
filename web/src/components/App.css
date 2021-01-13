@@ -1,0 +1,31 @@
+:root {
+  font-size: 16px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+.App__header {
+  height: 5em;
+  text-align: center;
+  background-color: darkblue;
+  color: white;
+}
+.App__title {
+  margin: 0;
+  padding: 0.5em 0;
+}
+.App__main {
+  padding: 20px;
+}
+
+@media (min-width: 768px) { /* and (orientation: portrait), (orientation: landscape) {*/
+  .App__main {
+    padding: 0;
+    margin: 0 auto;
+    width: 80%;
+  }
+}
